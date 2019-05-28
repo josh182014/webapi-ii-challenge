@@ -2,18 +2,6 @@ const router = require('express').Router();
 
 const Posts = require('../db');
 
-router.get('/', async (req, res) => {
-    try {
-        const posts = await Posts.find(req.query);
-        res.status(200).json(posts);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-        message: 'Error retrieving the posts',
-        });
-    }
-});
-
 router.post('/', async (req, res) => {
     try {
         if (!req.body.title || !req.body.contents) {
@@ -55,8 +43,31 @@ router.post('/:id/comments', async (req, res) => {
         error: 'There was an error while sving the comment to the database.',
         });
     }
-    });
-    
+});
+
+router.get('/', async (req, res) => {
+    try {
+        const posts = await Posts.find(req.query);
+        res.status(200).json(posts);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+        error: 'The posts information could not be retrieved.',
+        });
+    }
+});
+
+router.get('/:id', async (req, res) => {
+    try {
+        const post = await Posts.findById(req.params.id); 
+        res.status(200).json(post);
+    } catch(error) {
+        console.log(error)
+        res.status(500).json({
+            message: 'The posts information could not be retrieved.'
+        });
+    }
+});
 
 
 module.exports = router;
